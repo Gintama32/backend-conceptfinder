@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import db from '../database.js';
 function signin(req, res) {
   const {email,password} = req.body
