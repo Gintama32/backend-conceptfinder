@@ -3,7 +3,7 @@ import cors from 'cors';
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: 'https://zippy-kleicha-99f2cc.netlify.app'
 }));
 app.use(express.json());
 import routers from "./routes/routes.js";
