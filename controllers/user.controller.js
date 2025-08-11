@@ -3,7 +3,7 @@ import db from '../database.js';
 function signin(req, res) {
   const {email,password} = req.body
   if (!email || !password){
-    res.status(400).json('invalid credentials')
+    return res.status(400).json('invalid credentials')
   }
   db.select('email','hash').from('login')
   .where('email','=', email)
@@ -28,8 +28,11 @@ function signin(req, res) {
 function register(req, res) {
   const { email, password, name } = req.body;
   if (!email|| !password || !name){
-    res.status(400).json('invalid credentials')
+    return res.status(400).json('invalid credentials')
   }
+  
+  console.log('Registration attempt:', { email, name }); // Log the attempt
+  
   // Hash the password
   const hashedPassword = bcrypt.hashSync(password, 10);
   db.transaction(trx=>{
@@ -48,13 +51,21 @@ function register(req, res) {
           joined: new Date(),
         })
         .then(user=>{
+          console.log('User created successfully:', user[0]); // Log success
           res.json({id: user[0].id, name : user[0].name,entries : user[0].entries})
+        })
+        .catch(err => {
+          console.error('Error creating user:', err); // Log user creation error
+          throw err; // Re-throw to trigger rollback
         })
   })
   .then(trx.commit)
   .catch(trx.rollback)
     })
-    .catch (err=>res.status(400).json('unable to register'));
-  }
+    .catch (err => {
+      console.error('Registration transaction failed:', err); // Log transaction error
+      res.status(400).json('unable to register')
+    });
+}
   
 export { signin, register };
