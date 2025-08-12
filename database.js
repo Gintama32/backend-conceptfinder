@@ -2,6 +2,13 @@ import knex from 'knex';
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Debug logging
+console.log('Environment variables check:');
+console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+console.log('DB_HOST exists:', !!process.env.DB_HOST);
+console.log('DB_USER exists:', !!process.env.DB_USER);
+console.log('DB_PSWD exists:', !!process.env.DB_PSWD);
+
 // Check if DATABASE_URL is available (Supabase connection string)
 const connection = process.env.DATABASE_URL 
   ? process.env.DATABASE_URL
@@ -15,6 +22,12 @@ const connection = process.env.DATABASE_URL
         rejectUnauthorized: false // Required for Supabase
       }
     };
+
+console.log('Using connection type:', process.env.DATABASE_URL ? 'DATABASE_URL' : 'Individual credentials');
+console.log('Connection details:', {
+  host: process.env.DATABASE_URL ? 'DATABASE_URL' : process.env.DB_HOST,
+  user: process.env.DATABASE_URL ? 'DATABASE_URL' : process.env.DB_USER
+});
 
 const db = knex({
   client: 'pg',
